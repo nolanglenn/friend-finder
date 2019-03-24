@@ -1,37 +1,31 @@
 const friendsData = require("../data/friends");
 
 // ROUTING
-module.exports = function(app) {
+module.exports = function (app) {
 
-  // API GET Requests
-  app.get("/api/friends", function(req, res) {
-    res.json(friendsData);
-  });
+    // API GET Requests
+    app.get("/api/friends", function (req, res) {
+        res.json(friendsData);
+    });
 
-  // API POST Requests
-  app.post("/api/friends", function(req, res) {
-    // Note the code here. Our "server" will respond to requests and let users know if they have a table or not.
-    // It will do this by sending out the value "true" have a table
-    // req.body is available since we're using the body parsing middleware
-    if (friends.length < 5) {
-      friends.push(req.body);
-      res.json(true);
-    }
-    else {
-      waitListData.push(req.body);
-      res.json(false);
-    }
-  });
+    // API POST Requests
+    app.post("/api/friends", function (req, res) {
 
-  // ---------------------------------------------------------------------------
-  // I added this below code so you could clear out the table while working with the functionality.
-  // Don"t worry about it!
+        let newSurvey = req.body; 
+        let currentLowScore = Number.MAX_SAFE_INTEGER; 
+        let bestMatch = null; 
 
-  app.post("/api/clear", function(req, res) {
-    // Empty out the arrays of data
-    tableData.length = 0;
-    waitListData.length = 0;
-
-    res.json({ ok: true });
-  });
+        friendsData.forEach((friend) => {  
+            let scoreTotal = 0; 
+            friend.scores.forEach((score, index) => { 
+                scoreTotal += Math.abs(score - newSurvey.scores[index]); 
+            })
+            if (scoreTotal < currentLowScore) { 
+                currentLowScore = scoreTotal;
+                bestMatch = friend; 
+            }
+        })
+        friendsData.push(newSurvey); 
+        res.json(newSurvey);
+    });
 };
