@@ -9,11 +9,35 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+    <script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
     <script src="main.js"></script>
 </head>
 
 <body>
     <div class="container">
+
+        <div class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4><span id="nameMatch"></span></h4>
+                    <img id="imgMatch" src="" alt="" style="height: 250px; width: 250px">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
         <h2>Survey Questions</h2>
         <hr>
 
@@ -157,6 +181,39 @@
             </div>
         </footer>
     </div>
+
+    <script>
+
+        $("#submit").on("click", function (event) {
+
+            event.preventDefault();
+
+            let friendData = {
+                name: $("#name").val(),
+                photo: $("#photo").val(),
+                scores: [
+                    parseInt($("#q1").val()),
+                    parseInt($("#q2").val()),
+                    parseInt($("#q3").val()),
+                    parseInt($("#q4").val()),
+                    parseInt($("#q5").val()),
+                    parseInt($("#q6").val()),
+                    parseInt($("#q7").val()),
+                    parseInt($("#q8").val()),
+                    parseInt($("#q9").val()),
+                    parseInt($("#q10").val())
+                ]
+            };
+
+            $.post("/api/friends", friendData, function (data) {
+                //Best match
+                $("#nameMatch").text(data.name);
+                $("#imgMatch").attr("src", data.photo);
+    
+                $('#myModal').modal('toggle');
+            });
+        })
+    </script>
 </body>
 
 </html>
